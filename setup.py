@@ -10,7 +10,7 @@ setup(
     url='http://github.com/saiqi/nameko-mongodb',
     packages=['nameko_mongodb'],
     install_requires=[
-        'nameko>=2.0.0',
+        'nameko>=2.11.0',
         'pymongo'
     ],
     extra_requires=[

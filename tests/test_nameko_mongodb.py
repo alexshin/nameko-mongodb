@@ -56,7 +56,7 @@ def test_stop(database):
     assert database.client
 
     database.stop()
-    assert not hasattr(database, 'client')
+    assert database.client is None
 
 
 def test_get_dependency(database):

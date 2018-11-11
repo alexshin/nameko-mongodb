@@ -1,12 +1,8 @@
-amqp==1.4.9
 anyjson==0.3.3
 appdirs==1.4.0
 enum-compat==0.0.2
-eventlet==0.20.1
-greenlet==0.4.12
-kombu==3.0.37
 mock==2.0.0
-nameko==2.5.1
+nameko==2.11.0
 packaging==16.8
 path.py==10.1
 pbr==1.10.0
@@ -14,7 +10,7 @@ py==1.4.32
 pymongo==3.4.0
 pyparsing==2.1.10
 pytest==3.0.6
-PyYAML==3.12
+PyYAML==3.13
 requests==2.13.0
 six==1.10.0
 Werkzeug==0.11.15

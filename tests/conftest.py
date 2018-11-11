@@ -22,13 +22,13 @@ def db_url(request):
     return request.config.getoption("TEST_DB_URL")
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def container_factory():
 
     all_containers = []
 
-    def make_container(service_cls, config, worker_ctx_cls=None):
-        container = ServiceContainer(service_cls, config, worker_ctx_cls)
+    def make_container(service_cls, config):
+        container = ServiceContainer(service_cls, config)
         all_containers.append(container)
         return container
 

@@ -1,0 +1,9 @@
+version: '3.1'
+
+services:
+  mongodb:
+    image: mongo
+    restart: on-failure
+    container_name: nameko_mongodb
+    ports:
+      - 27017:27017
