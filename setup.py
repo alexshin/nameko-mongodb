@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='nameko-mongodb',
-    version='0.0.1-dev',
+    version='0.0.2-dev',
     description='Simple MongoDb dependency for nameko (microservices framework). Based on https://github.com/saiqi/nameko-mongodb',
     author='Alex Shinkevich',
     author_email='alex.shinkevich@gmail.com',
