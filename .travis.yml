@@ -22,8 +22,10 @@ deploy:
   user: alexshin
   distributions: "sdist bdist_wheel"
   skip_cleanup: true
+  skip_existing: true
   on:
     tags: true
-    all_branches: true
+    branch: master
+    python: '3.7'
   password:
     secure: "ivBv14vhsCRMCWlYOcAZBODo+SBYsAUyiwdtRd2p43Suuzcnis+rWzZi5JALSLmuiH0IqCN3JVW5DNdrMxhb+KZXVALeKYVFjPeztd8GVzhWltoXuRk87CoHS91jagYZuOqc85G1Xx5bIzLQlCqwApFn7hEyZxN0aaKVGlsX5GUKXBhujGc0R45B0FUa3WTVkrqZzWJAr2ah3dXXYgASEfhmBrbNPAFzoxviyHVNAMuRvKTGimWCg80ynAgI6JJkLTJdrrsuyR+qq0/F6/MAZHXbTov6+ycu1lUVklpOhES61uyANRIoeC7L98nvNboItJFzMumiXDUo0hQWqbUy651VN8D5sttPBnwi9MXNXx+uaJ/+6kYUQjub+nGpA7GI4oZl2hoGbuj06Dj0y2/KQC1bXUs08ivODwWVBZKdVv7mMIVdX8GHXRo4YxblSBE2WzHxgZuyLREZ4xc+35dZSH04kNiATx15m55NMorZQ6/YQAWaGRGKiJaeER2AYgDOAHZDnsMHJWIekZCU+bgf6W+jNV3/W2TA8P5oMKbJ1YeiL4VggWsJiuWPpgEtx0RXuyQ8B3MyrLwTw7EL8TYE1NR4nYZgpMOeyBWcePM+o5CWWeeX5No76ZbHvYsJo7e070fAiRu5dCTAglUczJIwpP3TjY9WaN2Ltzfqq7Ctc2o="
