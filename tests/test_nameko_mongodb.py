@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pytest
 from mock import Mock
 from nameko.testing.services import dummy, entrypoint_hook
@@ -28,14 +29,20 @@ class DummyService(object):
         return 1/0
 
 
+def _callback(s):
+    def f(_):
+        print(s)
+    return f
+
+
 class DummyServiceWithLogging(DummyService):
     database = MongoDatabase(result_backend=True)
 
 
 class DummyServiceWithCallbacks(DummyService):
     database = MongoDatabase(
-        on_before_setup=lambda _: print("before setup"),
-        on_after_setup=lambda _: print("after setup"),
+        on_before_setup=_callback("before setup"),
+        on_after_setup=_callback("after setup"),
     )
 
 
