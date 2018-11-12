@@ -28,6 +28,17 @@ class DummyService(object):
         return 1/0
 
 
+class DummyServiceWithLogging(DummyService):
+    database = MongoDatabase(result_backend=True)
+
+
+class DummyServiceWithCallbacks(DummyService):
+    database = MongoDatabase(
+        on_before_setup=lambda _: print("before setup"),
+        on_after_setup=lambda _: print("after setup"),
+    )
+
+
 @pytest.fixture
 def config(db_url):
     return {
@@ -67,12 +78,8 @@ def test_get_dependency(database):
     assert isinstance(db, Database)
 
 
-def test_end_to_end(db_url, container_factory):
-    config = {
-        'MONGODB_CONNECTION_URL': db_url
-    }
-
-    container = container_factory(DummyService, config)
+def _test_end_to_end_prepare(service_cls, factory, config):
+    container = factory(service_cls, config)
     container.start()
 
     with entrypoint_hook(container, 'insert_one') as insert_one:
@@ -81,16 +88,44 @@ def test_end_to_end(db_url, container_factory):
     with entrypoint_hook(container, 'find_one') as find_one:
         doc = find_one({'toto': 'titi'})
         assert doc['toto'] == 'titi'
-        
+
     with entrypoint_hook(container, 'corrupted_method') as corrupted_method:
         try:
             corrupted_method()
         except:
             pass
 
+    return container
+
+
+def test_end_to_end(db_url, container_factory):
+    config = {
+        'MONGODB_CONNECTION_URL': db_url
+    }
     client = MongoClient(config['MONGODB_CONNECTION_URL'])
     db = client.dummy_service
+    db.logging.drop()
+
+    container = _test_end_to_end_prepare(DummyService, container_factory, config)
+
     logs = db.logging.find({})
+
+    assert logs.count() == 0
+
+
+def test_end_to_end_with_logging(db_url, container_factory):
+    config = {
+        'MONGODB_CONNECTION_URL': db_url
+    }
+    client = MongoClient(config['MONGODB_CONNECTION_URL'])
+    db = client.dummy_service
+    db.logging.drop()
+
+    container = _test_end_to_end_prepare(DummyServiceWithLogging, container_factory, config)
+
+    logs = db.logging.find({})
+
+    assert logs.count() != 0
 
     for r in logs:
         if r['method_name'] == 'find_one':
@@ -100,3 +135,22 @@ def test_end_to_end(db_url, container_factory):
         elif r['method_name'] == 'corrupted_method':
             assert r['status'] == 'FAILED'
             assert r['exception']
+
+
+def test_end_to_end_with_callbacks(db_url, container_factory, capsys):
+    config = {
+        'MONGODB_CONNECTION_URL': db_url
+    }
+    client = MongoClient(config['MONGODB_CONNECTION_URL'])
+    db = client.dummy_service
+    db.logging.drop()
+
+    container = _test_end_to_end_prepare(DummyServiceWithCallbacks, container_factory, config)
+
+    logs = db.logging.find({})
+
+    captured = capsys.readouterr()
+    assert captured.out.find("before setup") >= 0
+    assert captured.out.find("after setup") >= 0
+
+    assert logs.count() == 0

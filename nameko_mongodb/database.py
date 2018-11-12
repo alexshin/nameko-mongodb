@@ -10,17 +10,42 @@ class MongoDatabase(DependencyProvider):
 
     default_connection_uri = 'mongodb://localhost:27017'
 
-    def __init__(self, result_backend=False):
+    def __init__(self, result_backend=False,
+                 on_before_setup=None, on_after_setup=None,
+                 on_before_stop=None, on_after_stop=None,
+                 on_before_worker_setup=None, on_after_worker_setup=None,
+                 on_before_worker_result=None, on_after_worker_result=None):
         self.result_backend = result_backend
         self.logs = WeakKeyDictionary()
         self.client = None
         self.database = None
 
+        # Callbacks
+        self.on_before_setup = on_before_setup
+        self.on_after_setup = on_after_setup
+
+        self.on_before_stop = on_before_stop
+        self.on_after_stop = on_after_stop
+
+        self.on_before_worker_setup = on_before_worker_setup
+        self.on_after_worker_setup = on_after_worker_setup
+
+        self.on_before_worker_result = on_before_worker_result
+        self.on_after_worker_result = on_after_worker_result
+
     @property
     def db(self):
         return self.database
+
+    def _run_callback(self, name, **kwargs):
+        assert hasattr(self, name), "Callback {} does not exist".format(name)
+
+        callback = getattr(self, name)
+        if callback is not None:
+            callback(self, **kwargs)
         
     def setup(self):
+        self._run_callback('on_before_setup')
         config = self.container.config
         db_name = config.get('MONGODB_DB_NAME', self.container.service_name)
         conn_uri = config.get('MONGODB_CONNECTION_URL', self.default_connection_uri)
@@ -40,14 +65,22 @@ class MongoDatabase(DependencyProvider):
             self.db.logging.create_index('start', expireAfterSeconds=24*60*60)
             self.db.logging.create_index('call_id')
 
+        self._run_callback('on_after_setup')
+
     def stop(self):
+        self._run_callback('on_before_stop')
+
         self.client.close()
         self.client = None
+
+        self._run_callback('on_after_stop')
 
     def get_dependency(self, worker_ctx):
         return self.db
     
     def worker_setup(self, worker_ctx):
+        self._run_callback('on_before_worker_setup', worker_ctx=worker_ctx)
+
         if self.result_backend:
             self.logs[worker_ctx] = datetime.datetime.now()
 
@@ -65,7 +98,11 @@ class MongoDatabase(DependencyProvider):
                 }
             )
 
+        self._run_callback('on_after_worker_setup', worker_ctx=worker_ctx)
+
     def worker_result(self, worker_ctx, result=None, exc_info=None):
+        self._run_callback('on_before_worker_result', worker_ctx=worker_ctx, result=result, exc_info=exc_info)
+
         if self.result_backend:
             call_id = worker_ctx.call_id
 
@@ -89,3 +126,5 @@ class MongoDatabase(DependencyProvider):
                     }
                 }
             )
+
+        self._run_callback('on_after_worker_result', worker_ctx=worker_ctx, result=result, exc_info=exc_info)

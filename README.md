@@ -70,6 +70,41 @@ class YourService(object):
 
 ```
 
+Sometimes there can be useful to get possibility executing callbacks for DependencyProvider methods (i.e. migrating 
+data when dependency initialized etc.). There are some callbacks:
+
+* `on_before_setup`: (instance)
+* `on_after_setup`: (instance)
+* `on_before_stop`: (instance)
+* `on_after_stop`: (instance)
+* `on_before_worker_setup`: (instance, worker_ctx)
+* `on_after_worker_setup`: (instance, worker_ctx)
+* `on_before_worker_result`: (instance, worker_ctx, result, exc_info)
+* `on_after_worker_result`: (instance, worker_ctx, result, exc_info)
+
+How to use callbacks:
+
+```python
+from nameko.rpc import rpc
+import MongoDatabase from nameko_mongodb
+
+
+class YourService(object):
+    name = 'your_service'
+
+    database = MongoDatabase(
+        on_before_setup=lambda x: print("Start setup DP"), 
+        on_after_setup=lambda x: print("Stop setup DP"),
+    )
+
+    @rpc
+    def find_item(self):
+        return self.database.your_collection.find_one()
+
+```
+
+
+
 ## Contribution
 
 I'd be glad to see your pull requests

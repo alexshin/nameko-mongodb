@@ -1,4 +1,4 @@
 nameko==2.11.0
-pymongo==3.4.0
-pytest==3.0.6
+pymongo==3.7.2
+pytest==3.10.1
 wheel==0.32.2

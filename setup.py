@@ -6,7 +6,7 @@ with open('README.md') as f:
 
 setup(
     name='nameko-mongodb',
-    version='1.0.1',
+    version='1.0.2',
     description='Simple MongoDb dependency for nameko (microservices framework). '
                 'Based on https://github.com/saiqi/nameko-mongodb',
     long_description=long_description,
@@ -20,7 +20,7 @@ setup(
         'pymongo'
     ],
     extra_requires=[
-        'pytest==3.0.6'
+        'pytest==3.10.1'
     ],
     zip_safe=True,
     license='Apache License, Version 2.0',
