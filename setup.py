@@ -6,7 +6,7 @@ with open('README.md') as f:
 
 setup(
     name='nameko-mongodb',
-    version='1.0.4',
+    version='1.1.0',
     description='Simple MongoDb dependency for nameko (microservices framework). '
                 'Based on https://github.com/saiqi/nameko-mongodb',
     long_description=long_description,
