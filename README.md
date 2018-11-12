@@ -1,5 +1,7 @@
 # Overview
 
+[![Build Status](https://travis-ci.org/alexshin/nameko-mongodb.svg?branch=master)](https://travis-ci.org/alexshin/nameko-mongodb)
+
 This is DependencyProvider for [Nameko microservices framework](https://www.nameko.io) which
 enables users to work with MongoDb.
 
