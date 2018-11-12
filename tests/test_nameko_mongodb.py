@@ -5,7 +5,7 @@ from nameko.containers import ServiceContainer, WorkerContext
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from nameko_mongodb.database import MongoDatabase
+from nameko_mongodb import MongoDatabase
 
 
 class DummyService(object):

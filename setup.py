@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 from setuptools import setup
 
+with open('README.md') as f:
+    long_description = f.read()
+
 setup(
     name='nameko-mongodb',
-    version='0.0.2-dev',
+    version='0.0.3-dev',
     description='Simple MongoDb dependency for nameko (microservices framework). Based on https://github.com/saiqi/nameko-mongodb',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Alex Shinkevich',
     author_email='alex.shinkevich@gmail.com',
     url='https://github.com/alexshin/nameko-mongodb',
