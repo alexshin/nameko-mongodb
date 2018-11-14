@@ -50,16 +50,19 @@ class MongoDatabase(DependencyProvider):
         db_name = config.get('MONGODB_DB_NAME', self.container.service_name)
         conn_uri = config.get('MONGODB_CONNECTION_URL', self.default_connection_uri)
 
-        self.client = MongoClient(conn_uri)
-        self.database = self.client[db_name]
-
+        params = {}
         if config.get('MONGODB_USER'):
-            self.db.authenticate(
-                config.get('MONGODB_USER'),
-                config.get('MONGODB_PASSWORD'),
-                source=config.get('MONGODB_AUTHENTICATION_BASE', db_name),
-                authMechanism=config.get('MONGODB_AUTH_MECHANISM')
-            )
+            if config.get('MONGODB_USER'):
+                params['username'] = config.get('MONGODB_USER')
+            if config.get('MONGODB_PASSWORD'):
+                params['password'] = config.get('MONGODB_PASSWORD')
+            if config.get('MONGODB_AUTHENTICATION_BASE'):
+                params['authSource'] = config.get('MONGODB_AUTHENTICATION_BASE')
+            if config.get('MONGODB_AUTH_MECHANISM'):
+                params['authSource'] = config.get('MONGODB_AUTH_MECHANISM')
+
+        self.client = MongoClient(conn_uri, **params)
+        self.database = self.client[db_name]
 
         if self.result_backend:
             self.db.logging.create_index('start', expireAfterSeconds=24*60*60)
