@@ -38,7 +38,7 @@ You can use the connection following way:
 
 ```python
 from nameko.rpc import rpc
-import MongoDatabase from nameko_mongodb
+from nameko_mongodb import MongoDatabase
 
 
 class YourService(object):
@@ -56,7 +56,7 @@ Also this package can log all executions to `logging` collection. If you want to
 
 ```python
 from nameko.rpc import rpc
-import MongoDatabase from nameko_mongodb
+from nameko_mongodb import MongoDatabase
 
 
 class YourService(object):
@@ -86,7 +86,7 @@ How to use callbacks:
 
 ```python
 from nameko.rpc import rpc
-import MongoDatabase from nameko_mongodb
+from nameko_mongodb import MongoDatabase
 
 
 class YourService(object):
